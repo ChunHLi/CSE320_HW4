@@ -4,6 +4,23 @@
 #include <string.h>
 #include <sys/time.h>
 
+
+
+struct addr_in_use{
+	void* addr;
+	int ref_count;
+};
+
+struct files_in_use{
+	char* filename;
+	int ref_count;
+};
+
+struct addr_in_use stor_addr[25];
+struct files_in_use stor_files[25];
+int stor_addr_size = 0;
+int stor_files_size = 0;
+
 void* cse320_malloc(size_t size){
 	void* ptr;
 	return ptr;
