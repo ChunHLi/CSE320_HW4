@@ -1,4 +1,4 @@
 all:
-	gcc part1.c -o part1
+	gcc -o part1 part1.c cse320_functions.c
 clean:
 	rm -f part1

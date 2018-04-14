@@ -5,6 +5,7 @@
 #include <unistd.h>
 #include <sys/wait.h>
 #include <sys/types.h>
+#include "cse320_functions.h"
 
 int loop(int argc, char* argv[], char** envp){
 	
