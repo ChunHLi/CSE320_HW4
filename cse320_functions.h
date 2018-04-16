@@ -11,6 +11,6 @@ FILE *cse320_fopen(const char *restrict filename, const char *restrict mode);
 int cse320_fclose(FILE *stream);
 void cse320_clean();
 int cse320_fork();
-int cse320_settimer(int which, const struct itimerval *new_value, struct itimerval *old_value);
+void cse320_settimer(int new_interval);
 
 #endif // CSE320_FUNCTIONS_H_

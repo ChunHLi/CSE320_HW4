@@ -6,6 +6,19 @@
 #include <sys/wait.h>
 #include <sys/types.h>
 #include "cse320_functions.h"
+#include <errno.h>
+#include <sys/time.h>
+#include "csapp.h"
+sigset_t mask;
+
+void handleSIGHUP(int sig){
+	pid_t pid;
+        while ((pid = waitpid(-1, NULL, 0)) > 0){
+        }
+        if (errno != ECHILD){
+                unix_error("waitpid error");
+	}
+}
 
 int loop(int argc, char* argv[], char** envp){
 	
@@ -42,21 +55,29 @@ int loop(int argc, char* argv[], char** envp){
 				if (strcmp(args[0],"run") == 0){
 					if (i < 2){
 						printf("Invalid number of arguments\n");
-					}
-					pid_t wpid;
-					pid_t pid = fork();
-					int pidstatus;
-					if (pid == 0){
-						if (execvp(args[1],args+1) == -1){
-							perror("Unsuccessful Application\n");
-						}
-						exit(1);
-					} else if (pid < 0) {
-						perror("Error Forking\n");
 					} else {
-						do {
-							wpid = waitpid(pid, &pidstatus, WUNTRACED);
-						} while (!WIFEXITED(pidstatus) && !WIFSIGNALED(pidstatus));
+						pid_t wpid;
+                                                sigemptyset(&mask);
+                                                sigaddset(&mask,SIGINT);
+						sigaddset(&mask,SIGQUIT);
+						signal(SIGHUP,handleSIGHUP);
+						pid_t pid = fork();
+						sigprocmask(SIG_BLOCK, &mask, NULL);
+						int pidstatus;
+						if (pid == 0){
+							if (execvp(args[1],args+1) == -1){
+								perror("Unsuccessful Application\n");
+							}
+							exit(1);
+						} else if (pid < 0) {
+							sigprocmask(SIG_UNBLOCK, &mask, NULL);
+							perror("Error Forking\n");
+						} else {
+							do {
+								wpid = waitpid(pid, &pidstatus, WUNTRACED);
+							} while (!WIFEXITED(pidstatus) && !WIFSIGNALED(pidstatus));
+							sigprocmask(SIG_UNBLOCK, &mask, NULL);
+						}
 					}
 				} else {
 					printf("Invalid command: %s not recognized\n", args[0]);
