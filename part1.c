@@ -58,13 +58,16 @@ int loop(int argc, char* argv[], char** envp){
 					} else {
 						pid_t wpid;
                                                 sigemptyset(&mask);
-                                                sigaddset(&mask,SIGINT);
+						sigaddset(&mask,SIGINT);
 						sigaddset(&mask,SIGQUIT);
 						signal(SIGHUP,handleSIGHUP);
 						pid_t pid = fork();
+						signal(SIGINT, SIG_IGN);
+						signal(SIGQUIT, SIG_IGN);
 						sigprocmask(SIG_BLOCK, &mask, NULL);
 						int pidstatus;
 						if (pid == 0){
+							sigprocmask(SIG_UNBLOCK, &mask, NULL);
 							if (execvp(args[1],args+1) == -1){
 								perror("Unsuccessful Application\n");
 							}
