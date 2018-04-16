@@ -6,10 +6,10 @@ It will be great (and useful for you) if you will document your work in this REA
 **THIS IS THE DOCUMENTATION OF CSE320 HW4 by SHAWN LI**
 **EACH FUNCTION HAS BEEN MADE WITH THE INTENTION OF FOLLOWING THE DOCUMENT PROVIDED BY THE PROFESSOR**
 
-##Part 1##
+## Part 1 ##
 Currently running "run X" in the pseudo terminal will block the main application and execute X. Any inputs to the main application will be **DELAYED** until the child process ends.
 
-##Part 2 & 3##
+## Part 2 & 3 ##
 General Contents of cse320_functions.h
 
 ```
@@ -22,6 +22,6 @@ int cse320_fork();
 void cse320_settimer(int new_interval); //sets the global variable interval which is used in setitimer
 ```
 
-##BEFORE TESTING CODE:##
+## BEFORE TESTING CODE: ##
 **1. INITIALIZE WITH THE FUNCTION cse320_init() IN YOUR MAIN FUNCTION WHICH INITIALIZES MUTEX_ADDR AND MUTEX_FILES**
 **2. END MAIN FUNCTION USING cse320_clean();
