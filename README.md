@@ -24,4 +24,5 @@ void cse320_settimer(int new_interval); //sets the global variable interval whic
 
 ## BEFORE TESTING CODE: ##
 **1. INITIALIZE WITH THE FUNCTION cse320_init() IN YOUR MAIN FUNCTION WHICH INITIALIZES MUTEX_ADDR AND MUTEX_FILES**
-**2. END MAIN FUNCTION USING cse320_clean();
+
+**2. END MAIN FUNCTION USING cse320_clean();**
