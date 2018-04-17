@@ -31,6 +31,7 @@ int loop(int argc, char* argv[], char** envp){
 		
 		do {
 			char** args;
+			
 			printf("> ");
 			fgets(str,255,stdin);
 			char* p = strchr(str,'\n');
@@ -42,8 +43,9 @@ int loop(int argc, char* argv[], char** envp){
 			} else if (strcmp(str,"exit") == 0){ 
 				status = 0; 
 			} else if (strcmp(str,"help") == 0){
-				printf("- exit: exit this application\n");
-				printf("- run X f1 f2 ... f5: execute application X with up to 5 arguments\n");
+				printf("\n- exit: exit this application\n");
+				printf("- help: list commands available\n");
+				printf("- run X f1 f2 ... f5: execute application X with up to 5 arguments\n\n");
 			} else {
 				char* token;
 				int i = 0;

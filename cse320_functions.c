@@ -20,33 +20,7 @@ struct files_in_use{
 };
 
 struct addr_in_use stor_addr[25];
-struct files_in_use stor_files[25] = {
-					{NULL,"",0},
-					{NULL,"",0},
-					{NULL,"",0},
-					{NULL,"",0},
-					{NULL,"",0},
-					{NULL,"",0},
-					{NULL,"",0},
-					{NULL,"",0},
-					{NULL,"",0},
-					{NULL,"",0},
-					{NULL,"",0},
-					{NULL,"",0},
-					{NULL,"",0},
-					{NULL,"",0},
-					{NULL,"",0},
-					{NULL,"",0},
-					{NULL,"",0},
-					{NULL,"",0},
-					{NULL,"",0},
-					{NULL,"",0},
-					{NULL,"",0},
-					{NULL,"",0},
-					{NULL,"",0},
-					{NULL,"",0},
-					{NULL,"",0}
-				     };
+struct files_in_use stor_files[25];
 volatile int stor_addr_size = 0;
 volatile int stor_files_size = 0;
 volatile int INTERVAL = 1;
@@ -60,6 +34,22 @@ void cse320_init(){
 	Sem_init(&mutex_addr,0,1);
 	Sem_init(&mutex_files,0,1);
 	Sem_init(&mutex_timer,0,1);
+	int a;
+	for (a = 0; a < 25; a++){
+		stor_addr[a].addr = NULL;
+		stor_addr[a].ref_count = 0;
+		stor_files[a].fptr = NULL;
+		stor_files[a].filename = "";
+		stor_files[a].ref_count = 0;
+	}
+}
+
+struct addr_in_use* get_stor_addr(){
+	return stor_addr;
+}
+
+struct files_in_use* get_stor_files(){
+	return stor_files;
 }
 
 void* cse320_malloc(size_t size){
