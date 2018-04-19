@@ -71,16 +71,21 @@ int main(int argc, char** argv){
 	pthread_t tid_2;
 	pthread_t tid_3;
 	pthread_t tid_4;
-	pthread_create(&tid_0, NULL, test_0, &i);
+	//pthread_create(&tid_0, NULL, test_0, &i);
 	//pthread_create(&tid_1, NULL, test_1, &i);
 	//pthread_create(&tid_2, NULL, test_2, &i);
 	//pthread_create(&tid_3, NULL, test_3, &i);
 	//pthread_create(&tid_4, NULL, test_4, &i);
-	pthread_join(tid_0,NULL);
+	//pthread_join(tid_0,NULL);
 	//pthread_join(tid_1,NULL);
 	//pthread_join(tid_2,NULL);
 	//pthread_join(tid_3,NULL);
 	//pthread_join(tid_4,NULL);
-	cse320_clean();
-	print_stor_files();
+	//cse320_clean();
+	//print_stor_files();
+	cse320_settimer(2);
+	cse320_fork();
+	cse320_fork();
+	cse320_fork();
+	while(1){}
 }

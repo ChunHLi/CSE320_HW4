@@ -63,9 +63,9 @@ int loop(int argc, char* argv[], char** envp){
 						sigaddset(&mask,SIGINT);
 						sigaddset(&mask,SIGQUIT);
 						signal(SIGHUP,handleSIGHUP);
-						pid_t pid = fork();
 						signal(SIGINT, SIG_IGN);
 						signal(SIGQUIT, SIG_IGN);
+						pid_t pid = fork();
 						sigprocmask(SIG_BLOCK, &mask, NULL);
 						int pidstatus;
 						if (pid == 0){
@@ -82,6 +82,8 @@ int loop(int argc, char* argv[], char** envp){
 								wpid = waitpid(pid, &pidstatus, WUNTRACED);
 							} while (!WIFEXITED(pidstatus) && !WIFSIGNALED(pidstatus));
 							sigprocmask(SIG_UNBLOCK, &mask, NULL);
+							signal(SIGINT, SIG_DFL);
+							signal(SIGQUIT, SIG_DFL);
 						}
 					}
 				} else {
