@@ -167,7 +167,7 @@ void handler(int sig){
 	struct itimerval tout;
    	signal(SIGALRM,handler);
 	pid_t pid;
-	pid = waitpid(-1, NULL, 0);
+	while((pid = waitpid(-1, NULL, 0)) > 0);
 	//if (errno != ECHILD){
 	//	unix_error("waitpid error");
 	//}
