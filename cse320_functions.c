@@ -167,33 +167,31 @@ void handler(int sig){
 	struct itimerval tout;
    	signal(SIGALRM,handler);
 	pid_t pid;
-	while ((pid = waitpid(-1, NULL, 0)) > 0){
-	}
-	if (errno != ECHILD){
-		unix_error("waitpid error");
-	}
+	pid = waitpid(-1, NULL, 0);
+	//if (errno != ECHILD){
+	//	unix_error("waitpid error");
+	//}
 	tout.it_interval.tv_sec = 0;
 	tout.it_interval.tv_usec = 0;
 	P(&mutex_timer);
    	tout.it_value.tv_sec = INTERVAL;
 	V(&mutex_timer);
-   	tout.it_value.tv_usec = 0;
-   
-   	setitimer(ITIMER_REAL, &tout,0);
+	tout.it_value.tv_usec = 0;
+	setitimer(ITIMER_REAL, &tout,0);
 }
 
 pid_t cse320_fork(){
 	pid_t pid = fork();
 	if (pid > 0){
 		struct itimerval tout;
-                tout.it_interval.tv_sec = 0;
-                tout.it_interval.tv_usec = 0;
+        	tout.it_interval.tv_sec = 0;
+        	tout.it_interval.tv_usec = 0;
 		P(&mutex_timer);
-                tout.it_value.tv_sec = INTERVAL;
-                V(&mutex_timer);
+        	tout.it_value.tv_sec = INTERVAL;
+        	V(&mutex_timer);
 		tout.it_value.tv_usec = 0;
 		setitimer(ITIMER_REAL, &tout,0);
-		signal(SIGALRM, handler);	
+		signal(SIGALRM, handler);
 	}
 	return pid;
 }

@@ -84,8 +84,9 @@ int main(int argc, char** argv){
 	//cse320_clean();
 	//print_stor_files();
 	cse320_settimer(2);
-	cse320_fork();
-	cse320_fork();
-	cse320_fork();
-	while(1){}
+	pid_t pid = cse320_fork();
+	pid_t pid2 = cse320_fork();
+	pid_t pid3 = cse320_fork();
+	
+	while(pid > 0 && pid2 > 0 && pid3 > 0){}
 }
