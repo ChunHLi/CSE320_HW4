@@ -5,6 +5,21 @@
 #include <string.h>
 #include <sys/time.h>
 
+struct addr_in_use{
+        void* addr;
+        int ref_count;
+};
+
+struct files_in_use{
+        FILE* fptr;
+        const char* filename;
+        int ref_count;
+};
+
+struct addr_in_use stor_addr[25];
+struct files_in_use stor_files[25];
+
+void cse320_init();
 void* cse320_malloc(size_t size);
 void cse320_free(void* ptr);
 FILE *cse320_fopen(const char *restrict filename, const char *restrict mode);

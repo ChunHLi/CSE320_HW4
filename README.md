@@ -13,8 +13,6 @@ Currently running "run X" in the pseudo terminal will block the main application
 General Contents of cse320_functions
 
 ```
-struct addr_in_use* get_stor_addr(); //returns stor_addr USE FOR TESTING
-struct files_in_use* get_stor_files(); //returns stor_files USE FOR TESTING
 void* cse320_malloc(size_t size);
 void cse320_free(void* ptr);
 FILE *cse320_fopen(const char *restrict filename, const char *restrict mode);
@@ -26,5 +24,6 @@ void cse320_settimer(int new_interval); //sets the global variable interval whic
 
 ## BEFORE TESTING CODE: ##
 **1. INITIALIZE WITH THE FUNCTION cse320_init() IN YOUR MAIN FUNCTION WHICH INITIALIZES MUTEX_ADDR, MUTEX_FILES, MUTEX_INTERVAL, STOR_ADDR AND STOR_FILES**
+**2. ACCESS DATA STRUCTURES STORING ADDRESSES AND FILE INFO WITH stor_addr and stor_files
 
 **2. END MAIN FUNCTION USING cse320_clean();**

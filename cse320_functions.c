@@ -8,19 +8,7 @@
 #include <errno.h>
 #include <sys/types.h>
 
-struct addr_in_use{
-	void* addr;
-	int ref_count;
-};
 
-struct files_in_use{
-	FILE* fptr;
-	const char* filename;
-	int ref_count;
-};
-
-struct addr_in_use stor_addr[25];
-struct files_in_use stor_files[25];
 volatile int stor_addr_size = 0;
 volatile int stor_files_size = 0;
 volatile int INTERVAL = 1;
@@ -29,11 +17,13 @@ volatile int INTERVAL = 1;
 sem_t mutex_addr;
 sem_t mutex_files;
 sem_t mutex_timer;
+sem_t mutex_clean;
 
 void cse320_init(){
 	Sem_init(&mutex_addr,0,1);
 	Sem_init(&mutex_files,0,1);
 	Sem_init(&mutex_timer,0,1);
+	Sem_init(&mutex_clean,0,1);
 	int a;
 	for (a = 0; a < 25; a++){
 		stor_addr[a].addr = NULL;
@@ -44,13 +34,6 @@ void cse320_init(){
 	}
 }
 
-struct addr_in_use* get_stor_addr(){
-	return stor_addr;
-}
-
-struct files_in_use* get_stor_files(){
-	return stor_files;
-}
 
 void* cse320_malloc(size_t size){
 	while (1){
@@ -80,14 +63,14 @@ void cse320_free(void* ptr){
 		for (i = 0; i < stor_addr_size; i++){
 			if (stor_addr[i].addr == ptr && stor_addr[i].ref_count > 0){
 				free(stor_addr[i].addr);
-				stor_addr[i].addr = NULL;
+				//stor_addr[i].addr = NULL;
 				stor_addr[i].ref_count = 0;
 				goto skip;
 			} else if (stor_addr[i].addr == ptr && stor_addr[i].ref_count == 0){
 				errno = EADDRNOTAVAIL;
 				perror("Free: Double free attempt\n");
-				cse320_clean();
 				V(&mutex_addr);
+				cse320_clean();
 				exit(-1);	
 			} else {
 			}
@@ -102,15 +85,15 @@ void cse320_free(void* ptr){
 	}
 }
 
-FILE *cse320_fopen(const char *restrict fileName, const char *restrict mode){
+FILE* cse320_fopen(const char *restrict fileName, const char *restrict mode){
 	while (1){
         	P(&mutex_files);
 		FILE* fp;
 		if (stor_files_size >= 25){
 			errno = ENFILE;
 			perror("Too many opened files\n");
-			cse320_clean();
 			V(&mutex_files);
+			cse320_clean();
 			exit(-1);
 		} else {
 			int i;	
@@ -122,9 +105,10 @@ FILE *cse320_fopen(const char *restrict fileName, const char *restrict mode){
 				}
 			}
 			stor_files[stor_files_size].filename = fileName;
-			stor_files[stor_files_size].ref_count += 1;
+			stor_files[stor_files_size].ref_count = 1;
+			fp = fopen(fileName, mode);
+			stor_files[stor_files_size].fptr=fp; 
 			stor_files_size++;
-			fp = fopen(fileName, mode); 
 		}
 		skip:
 		V(&mutex_files);
@@ -160,17 +144,22 @@ int cse320_fclose(FILE *stream){
 }
 
 void cse320_clean(){
-	int i;
-	for (i = 0; i < stor_addr_size; i++){
-		if (stor_addr[i].ref_count == 1){
-			cse320_free(stor_addr[i].addr);
+	while (1){
+		P(&mutex_clean);
+		int i;
+		for (i = 0; i < stor_addr_size; i++){
+			if (stor_addr[i].ref_count == 1){
+				cse320_free(stor_addr[i].addr);
+			}
 		}
-	}
-	int j;
-	for (j = 0; j < stor_files_size; j++){
-		while (stor_files[j].ref_count > 0){
-			cse320_fclose(stor_files[j].fptr);
-		}
+		//int j;
+		//for (j = 0; j < stor_files_size; j++){
+		//	while (stor_files[j].ref_count > 0){
+		//		cse320_fclose(stor_files[j].fptr);
+		//	}
+		//}
+		V(&mutex_clean);
+		return;
 	}
 }
 
